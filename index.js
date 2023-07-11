@@ -50,9 +50,23 @@ async function run() {
 
     app.post("/addAToy", async (req, res) => {
       const addedToy = req.body;
-      console.log(addedToy);
       const result = await toyCollection.insertOne(addedToy);
       res.send(result);
+    });
+
+    app.get("/toyCategory", async (req, res) => {
+      const uniqueCategories = [];
+      const seenCategories = new Set();
+      const toys = toyCollection.find();
+      const result = await toys.toArray();
+      const categories = result.map((obj) => {
+        const category = obj.categories;
+        if (!seenCategories.has(category)) {
+          uniqueCategories.push(category);
+          seenCategories.add(category);
+        }
+      });
+      res.send(uniqueCategories);
     });
 
     app.get("/totalToy", async (req, res) => {
