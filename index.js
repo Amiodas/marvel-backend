@@ -34,6 +34,9 @@ async function run() {
 
     //collection
     const toyCollection = client.db("toysMarketPlaceDB").collection("toys");
+    const myToysCollection = client
+      .db("toysMarketPlaceDB")
+      .collection("myToys");
 
     app.get("/toys", async (req, res) => {
       const toys = toyCollection.find();
@@ -85,6 +88,28 @@ async function run() {
         .toArray();
       res.send(result);
     });
+
+    app.post("/myToys", async (req, res) => {
+      const addedToy = req.body;
+      console.log(addedToy);
+      const result = await myToysCollection.insertOne(addedToy);
+      res.send(result);
+    });
+
+    app.get("/myToys", async (req, res) => {
+      const myToys = myToysCollection.find();
+      const result = await myToys.toArray();
+      res.send(result);
+    });
+
+    app.delete("/myToys/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = {_id : id}
+      const result = await myToysCollection.deleteOne(query);
+      res.send(result);      
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
