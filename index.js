@@ -70,6 +70,17 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/toys/ascending", async (req, res) => {
+      const ascendingToys = await toyCollection.find().sort({price: 1}).toArray();
+      res.send(ascendingToys);
+    });
+
+    app.get("/toys/descending", async (req, res) => {
+      const ascendingToys = await toyCollection.find().sort({price: -1}).toArray();
+      res.send(ascendingToys);
+    });
+    
+
     app.get("/toys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -140,6 +151,7 @@ async function run() {
         .toArray();
       res.send(result);
     });
+
 
     app.post("/myToys", async (req, res) => {
       const addedToy = req.body;
